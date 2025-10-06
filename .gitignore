@@ -1,0 +1,54 @@
+# ------------------------
+# Virtual environment
+# ------------------------
+.venv/
+venv/
+
+
+# ------------------------
+# Python cache and logs
+# ------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.log
+
+# ------------------------
+# Environment variables
+# ------------------------
+.env
+.env.*
+
+# ------------------------
+# Distribution / packaging
+# ------------------------
+build/
+dist/
+*.egg-info/
+*.egg
+*.whl
+
+# ------------------------
+# Jupyter Notebook checkpoints
+# ------------------------
+.ipynb_checkpoints/
+
+# ------------------------
+# IDEs and editors
+# ------------------------
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# ------------------------
+# System files
+# ------------------------
+.DS_Store
+Thumbs.db
