@@ -1,1 +1,3 @@
 RagTool/
+__pycache__/
+*.pyc
