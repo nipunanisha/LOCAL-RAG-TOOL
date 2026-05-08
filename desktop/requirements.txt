@@ -1,0 +1,5 @@
+# Desktop shell deps — install in addition to your existing rag deps
+pywebview>=5.1
+fastapi>=0.110
+uvicorn>=0.30
+pydantic>=2.5

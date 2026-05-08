@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="48" viewBox="0 0 240 48" fill="none">
+  <g transform="translate(2,4)">
+    <rect x="6" y="14" width="28" height="20" rx="2" fill="none" stroke="currentColor" stroke-width="2.4"></rect>
+    <line x1="11" y1="20" x2="29" y2="20" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"></line>
+    <line x1="11" y1="25" x2="26" y2="25" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"></line>
+    <line x1="11" y1="30" x2="23" y2="30" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"></line>
+    <circle cx="32" cy="30" r="2.2" fill="#c46a1f"></circle>
+  </g>
+  <text x="50" y="32" font-family="Inter Tight, system-ui, sans-serif" font-weight="600" font-size="20" letter-spacing="-0.01em" fill="currentColor">folder rag</text>
+</svg>

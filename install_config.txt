@@ -1,0 +1,5 @@
+{
+    "PythonVersion":  "3.12.0",
+    "InstallDate":  "2026-05-07 14:53:14",
+    "InstallPath":  "C:\\Users\\Nipun\\Pictures\\RAGTool"
+}

@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <title>Local File Agent</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+
+<div class="app">
+  <!-- TITLE BAR -->
+  <header class="titlebar">
+    <div class="brand">
+      <svg width="20" height="20" viewBox="0 0 64 64" fill="none">
+        <rect x="14" y="24" width="36" height="26" rx="3" fill="none" stroke="currentColor" stroke-width="3"/>
+        <line x1="20" y1="32" x2="44" y2="32" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+        <line x1="20" y1="38" x2="40" y2="38" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+        <line x1="20" y1="44" x2="36" y2="44" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="48" cy="44" r="3" fill="#c46a1f"/>
+      </svg>
+      <span>Agent Document Directory </span>
+    </div>
+    <div class="folder-display" id="folder-display">no folder selected</div>
+    <div class="title-actions">
+      <span class="pill" id="device-pill">cpu</span>
+      <button class="btn btn-ghost" id="open-settings" title="settings (⌘,)">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="2.2"/><path d="M16 11.4a6.4 6.4 0 0 0 0-2.8l1.6-1.2-1.5-2.6-1.9.7a6.5 6.5 0 0 0-2.4-1.4L11.4 2H8.6l-.4 2.1a6.5 6.5 0 0 0-2.4 1.4l-1.9-.7-1.5 2.6 1.6 1.2a6.4 6.4 0 0 0 0 2.8l-1.6 1.2 1.5 2.6 1.9-.7a6.5 6.5 0 0 0 2.4 1.4l.4 2.1h2.8l.4-2.1a6.5 6.5 0 0 0 2.4-1.4l1.9.7 1.5-2.6z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <button class="btn btn-secondary full" id="pick-folder">
+      <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 5.5a1 1 0 0 1 1-1h4l1.5 1.5h7.5a1 1 0 0 1 1 1V15a1 1 0 0 1-1 1h-13a1 1 0 0 1-1-1z"/></svg>
+      choose folder
+    </button>
+    <button class="btn btn-primary full" id="rebuild-index" disabled>rebuild index</button>
+
+    <!-- indexing progress -->
+    <div class="indexing hidden" id="indexing-progress">
+      <div class="indexing-row">
+        <span class="mono-small" id="indexing-label">indexing…</span>
+        <span class="mono-small" id="indexing-pct">0%</span>
+      </div>
+      <div class="progress"><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="mono-small indexing-detail" id="indexing-detail">walking folder…</div>
+    </div>
+
+    <div class="sessions-head">
+      <div class="group-label" style="margin:0">chats</div>
+      <button class="btn btn-ghost icon" id="new-session" title="new chat">
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><line x1="10" y1="4" x2="10" y2="16"/><line x1="4" y1="10" x2="16" y2="10"/></svg>
+      </button>
+    </div>
+    <div class="sessions-list" id="sessions-list"></div>
+
+    <div class="folder-stats mono-small" id="folder-stats" hidden>
+      <div><span class="k">docs</span><span class="v" id="stat-docs">—</span></div>
+      <div><span class="k">chunks</span><span class="v" id="stat-chunks">—</span></div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div id="empty" class="empty">
+      <div class="empty-mark">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="14" y="24" width="36" height="26" rx="3"/>
+          <line x1="20" y1="32" x2="44" y2="32" stroke-linecap="round"/>
+          <line x1="20" y1="38" x2="40" y2="38" stroke-linecap="round"/>
+          <line x1="20" y1="44" x2="36" y2="44" stroke-linecap="round"/>
+          <circle cx="48" cy="44" r="3" fill="#c46a1f" stroke="none"/>
+        </svg>
+      </div>
+      <div class="empty-title">point AI Local File Agent at a directory</div>
+      <div class="empty-sub">pdf, docx, pptx, xlsx, csv, html, txt, md — indexed locally, queried locally.</div>
+    </div>
+
+    <div id="conversation" class="conversation hidden"></div>
+
+    <!-- ASK BAR -->
+    <div class="ask-shell">
+      <div class="ask">
+        <input id="question" type="text" placeholder="ask a question about these files" disabled />
+        <button class="mic" id="mic" title="voice typing (space)" hidden>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="3" width="6" height="11" rx="3"/>
+            <path d="M5 11a7 7 0 0 0 14 0"/>
+            <line x1="12" y1="18" x2="12" y2="21"/>
+          </svg>
+        </button>
+        <button class="ask-btn" id="ask" disabled>ask</button>
+      </div>
+      <div class="ask-meta">
+        <span class="pill" id="meta-mode">fallback</span>
+        <span class="pill" id="meta-model">qwen3:8b</span>
+        <span class="mono-small" id="status-line">choose a folder to begin</span>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div class="modal hidden" id="settings-modal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <div class="t-h3">settings</div>
+      <button class="btn btn-ghost icon" id="close-settings">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="5" x2="15" y2="15"/><line x1="15" y1="5" x2="5" y2="15"/></svg>
+      </button>
+    </div>
+
+    <div class="setting">
+      <label>openai api key</label>
+      <div class="key-row">
+        <input id="s-openai-key" type="password" placeholder="sk-..." />
+        <button class="btn btn-ghost" id="reveal-key" type="button">show</button>
+      </div>
+      <div class="hint" id="key-hint">not set</div>
+    </div>
+
+    <div class="setting">
+      <label>openai model</label>
+      <div class="key-row">
+        <select id="s-openai-model"></select>
+        <input id="s-openai-model-custom" type="text" placeholder="custom model id" hidden />
+      </div>
+      <div class="hint">used when backend is openai. pick a curated model or enter a custom id.</div>
+    </div>
+
+    <div class="setting">
+      <label>ollama base url</label>
+      <input id="s-ollama-url" type="text" placeholder="http://localhost:11434" />
+    </div>
+
+    <div class="setting">
+      <label>ollama model</label>
+      <input id="s-ollama-model" type="text" placeholder="qwen3:8b" />
+    </div>
+
+    <div class="setting two">
+      <div>
+        <label>default backend</label>
+        <select id="s-backend">
+          <option value="Ollama">ollama</option>
+          <option value="OpenAI">openai</option>
+        </select>
+      </div>
+      <div>
+        <label>default retrieval</label>
+        <select id="s-mode">
+          <option value="fallback">fallback</option>
+          <option value="strict">strict</option>
+          <option value="pure_llm">pure llm</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="setting two">
+      <div>
+        <label>theme</label>
+        <select id="s-theme">
+          <option value="dark">dark (graphite)</option>
+          <option value="light">light (paper)</option>
+        </select>
+      </div>
+      <div>
+        <label>default top-k</label>
+        <input id="s-topk" type="number" min="1" max="12" value="5" />
+      </div>
+    </div>
+
+    <div class="modal-foot">
+      <button class="btn btn-ghost" id="settings-cancel">cancel</button>
+      <button class="btn btn-primary" id="settings-save">save</button>
+    </div>
+  </div>
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
