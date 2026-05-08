@@ -1,3 +1,6 @@
 RagTool/
 __pycache__/
 *.pyc
+compile.py
+build/
+*.c
